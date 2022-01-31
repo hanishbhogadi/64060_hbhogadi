@@ -1,0 +1,42 @@
+---
+title: "Assignment 1"
+author: "Hanish"
+date: "1/30/2022"
+output:
+  html_document:
+    df_print: paged
+  pdf_document: default
+  word_document: default
+---
+
+```{r setup}
+#Reference
+
+#https://www.kaggle.com/tejashvi14/employee-future-prediction
+
+data1 = read.csv("C:/Users/Hanish Bhogadi/Desktop/Employees data.csv")
+data1
+#ABOVE IS THE DATA USED FOR THE ASSIGNMENT
+#Quantitative Descriptive Statistics
+
+
+mean(data1$Age)
+#ABOVE IS THE MEAN OF THE AGE COLUMN IN THE DATA
+#Categorical Variables
+table(data1$City)
+data1$Age_mode = median(data1$Age)* median(data1$Age)*median(data1$Age) - mean(data1$Age)* mean(data1$Age)
+data1$Age_mode
+#Below is the Histogram of Quantitative Variable
+hist(data1$JoiningYear)
+
+
+
+
+
+
+#Below is the Scatter plot 
+x <- data1$Age
+y <- data1$JoiningYear
+plot(x,y, main = "Age and year", xlab = "Age", ylab = "Year")
+```
+
