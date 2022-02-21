@@ -6,8 +6,11 @@ output:
   pdf_document: default
   word_document: default
 ---
+```{r}
+setwd("C:/Users/Hanish Bhogadi/Documents/Assignment 2")
+```
 
-```{r setup}
+```{r}
 #Calling libraries
 
 library('caret')
@@ -16,7 +19,7 @@ library('dplyr')
 library('class')
 
 #Importing Data
-Bank <- read.csv("C:/Users/Hanish Bhogadi/Downloads/UniversalBank.csv")
+Bank <- read.csv("C:/Users/Hanish Bhogadi/Documents/Assignment 2/UniversalBank.csv")
 
 #MakingID and ZIP code as NULL
 Bank$ID <- NULL
