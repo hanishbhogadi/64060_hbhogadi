@@ -1,0 +1,108 @@
+---
+title: "Assignment 3 - Machine learning"
+author: "Hanish Bhogadi"
+date: "3/6/2022"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+```{r}
+UB <- read.csv("C:/Users/Hanish Bhogadi/Documents/64060_hbhogadi/Assignment_3/UniversalBank.csv")
+View(UB)
+summary(UB)
+library(caret)
+library(ISLR)
+library(dplyr)
+library(class)
+library(e1071)
+df = UB
+
+#coverting variables
+UB$Personal.Loan <- factor(UB$Personal.Loan)
+UB$Online <- factor(UB$Online)
+UB$CreditCard <- factor(UB$CreditCard)
+
+#Task 1
+set.seed(64060)
+Train_index <- createDataPartition(df$Personal.Loan, p = 0.6, list = FALSE)
+train.df = df[Train_index,]
+validation.df = df[-Train_index,]
+mytable <- xtabs(~ CreditCard + Online + Personal.Loan, data = train.df)
+ftable(mytable)
+```
+
+```{r}
+#Task 2
+#The probability of loan acceptance (Loan = 1) conditional on having a bank
+#credit card (CC = 1) and being an active user of online banking services
+#(Online = 1)
+#Probability of loan acceptance given having a bank credit card and user
+Probability = (50/(50+477))
+Probability
+```
+
+```{r}
+#Task 3
+table(Personal.Loan = train.df$Personal.Loan, Online = train.df$Online)
+table(Personal.Loan = train.df$Personal.Loan, CreditCard = train.df$CreditCard)
+table(Personal.Loan = train.df$Personal.Loan)
+```
+
+```{r}
+#Task 4
+#i. P(CC = 1 | Loan = 1) (the proportion of #credit card holders among the loan
+#acceptors)
+Probability1 <- 85/(85+200)
+Probability1
+
+#ii. P(Online = 1 | Loan = 1)
+Probability2 <- 174/(111+174)
+Probability2
+
+#iii. P(Loan = 1) (the proportion of loan acceptors)
+Probability3 <- 285/(285+2715)
+Probability3
+
+#iv. P(CC = 1 | Loan = 0)
+Probability4 <- 784/(1931+784)
+Probability4
+
+
+#v. P(Online = 1 | Loan = 0)
+Probability5 <- 1621/(1621+1094)
+Probability5
+
+#vi. P(Loan = 0)
+Probability6 <- 2715/(2715+285)
+Probability6
+
+
+
+```
+```{r}
+#Task 5
+#Use the quantities computed above to compute the naive Ba1 probability
+#P(Loan = 1 | CC = 1, Online = 1).
+#Let a =
+Task5Probablity <- (Probability1*Probability2*Probability3)/((Probability1*Probability2*Probability3)+(Probability4*Probability5*Probability6))
+Task5Probablity
+```
+
+#Task 6
+#Compare this value with the one obtained from the pivot table in (B). Which is
+#a more accurate estimate?
+#The value derived in 2 was 0.09487666 and in the Task 5 is 0.09980052 are very similar. The only #difference between the exact method and the naive-baise
+#method is the exact method would need the the exact same independent variable #classifications to predict, whereas the #naive bayes method does not. We can
+#say that the value derived from the Task 2 is more #accurate as we have taken
+#the exact values from the pivot table.
+
+#Task 7
+#Run naive Bayes on the data. Examine the model output on training data, and
+#find the entry that corresponds to P(Loan = 1 | CC = 1, Online = 1).
+#Compare this to the number you obtained in (E).
+nb.model<-naiveBayes (Personal.Loan~ Online +CreditCard, data=train.df)
+To_Predict=data.frame(Online= 1, CreditCard= 1)
+predict(nb.model,To_Predict,type='raw')
+
+#The value derived from Task 7 is 0.1013226 and the value derived from the task 5 is 0.09980052. The output #is exactlty same that we received in Task 5 . There is only a minute difference because of the rounding. #The difference will not effect the rank order of the output
