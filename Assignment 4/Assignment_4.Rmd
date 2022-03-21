@@ -1,0 +1,120 @@
+---
+title: "Assignment 4"
+author: "Hanish Bhogadi"
+date: "3/20/2022"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+setwd("C:/Users/Hanish Bhogadi/Documents/64060_hbhogadi/Assignment 4")
+
+```
+Loading the required libraries
+```{r, warning=FALSE}
+library(factoextra)
+library(ggplot2)
+library(dplyr)
+library(cluster)
+```
+Loading the data
+```{r}
+Pharma_Data <- read.csv("Pharmaceuticals.csv")
+View(Pharma_Data)
+summary(Pharma_Data)
+```
+Removing the missing data
+```{r}
+Pharma_Data_NA <- na.omit(Pharma_Data)
+View(Pharma_Data_NA)
+```
+Separating the columns 1-9 for initial analysis with numerical columns
+```{r}
+row.names(Pharma_Data_NA) <- Pharma_Data_NA[,1]
+Pharma_Data1 <- Pharma_Data_NA[,3:11]
+head(Pharma_Data1)
+```
+Scaling the data to bring the quantity data to reduce the distance between them
+```{r}
+Pharma_scale <- scale(Pharma_Data1)
+head(Pharma_scale)
+```
+Determining the number of clusters using Elbow method and sillhouette Method
+```{r}
+fviz_nbclust(Pharma_scale, kmeans, method = "wss")
+fviz_nbclust(Pharma_scale, kmeans, method = "silhouette")
+```
+
+I used Elbow and Silhouette methods to find the optimal number of clusters. As Silhouette analysis is considered better than elbow method, I wanted to go with Silhouette method.
+
+```{r}
+set.seed(64060)
+five_clusters <- kmeans(Pharma_scale, centers = 5, nstart = 25)
+five_clusters$centers
+fviz_cluster(five_clusters, data = Pharma_scale)
+```
+
+#As per the clusters formed above the sizes are 8, 2, 4, 4, 3
+
+
+```{r}
+fit <- kmeans(Pharma_scale, 5)
+```
+
+
+```{r}
+Pharma2 <- data.frame(Pharma_scale, fit$cluster)
+Pharma2
+
+```
+
+```{r}
+clusplot(Pharma_scale, fit$cluster, color = TRUE, shade = TRUE, labels = 2, lines =0)
+```
+
+#Task 2: Interpret the clusters with respect to the numerical variables used in forming the clusters.
+
+By observing the mean values of all quantitative variables for each cluster
+
+```{r}
+aggregate(Pharma_scale, by = list(fit$cluster), FUN=mean)
+```
+
+
+Cluster_1 - JNJ, MRK, GSK, PFE - They have the highest market cap and the the companies are managing their operations by financing their operations fairly well (leverage below 0.47)
+
+Cluster_2 - AHM, AVE, WPI - They have lowest asset turnover, lowest beta meaning the company stocks are performing lower than the current market performance index. 
+
+Cluster_3 - IVX, MRX, ELN, CHTT - They have the lowest market capitalization, the company is not using its debt to fund its operations, they all have highest revenue growth. These company stocks are also giving good returns since their beta value is more than 1.
+
+Cluster_4 - AGN, PHA, BAY - These have the highest price to earning ratio making them less lucrative. Their Return on equity is also in below 1 proving that investment in these stocks will not be as fruitful as other stocks.  
+
+Cluster_5 - ABT, NVS, AZN, LLY, BMY, WYE, SGP - They have highest asset turnover, lowest revenue growth, and highest net profit margin. These companies are lucrative as they are growing companies.
+
+#Task 3: Is there a pattern in the clusters with respect to the numerical variables (10 to 12)? (those not used in forming the clusters) 
+
+We have manually filter each cluster to identify the patterns with respect to media recommendations, location and exchange. 
+
+For cluster 1: The stocks are moderate in nature meaning, they are neither weak stocks nor stocks with good returns in the recent past. 
+
+For cluster 2: The stocks are diversified in terms of their location. Their fundamentals are technically good and media recommendations are highly positive
+
+For cluster 3: Their leverage ratio is high, they are moderately recommended because of their financial stability 
+
+For cluster 4: hese are the stocks that needs to be held as per the media recommendations since they will eventually turn into good stocks  
+
+For Cluster 5: The cluster has stocks that are recommended to be held for longer time since they have high net profit margin. 
+
+#Task 4: Provide an appropriate name for each cluster using any or all of the variables in the dataset. 
+
+Cluster 1: Growth Cluster - Since these are stable stocks 
+Cluster 2: Multi bagger cluster - Through their beta is low, market recommendations are very positive
+Cluster 3: Fundamental Cluster - Stocks with good stability in terms of their finances and other fundamentals
+Cluster 4: Hold cluster - These are the stocks they have decent numbers. 
+Cluster 5: Long term Cluster - High net profit margin means good business and hence the stocks are highly recommended to be held in the portofolio 
+
